@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
           "https://api.giphy.com/v1/gifs/trending?api_key=NJx8tjTo4S8KaDRLxGc8Eo6HWRtGWeEi&limit=20&rating=G");
     else
       response = await http.get(
-          "https://api.giphy.com/v1/gifs/search?api_key=NJx8tjTo4S8KaDRLxGc8Eo6HWRtGWeEi&q=$search&limit=25&offset=$offset&rating=G&lang=en");
+          "https://api.giphy.com/v1/gifs/search?api_key=NJx8tjTo4S8KaDRLxGc8Eo6HWRtGWeEi&q=$search&limit=19&offset=$offset&rating=G&lang=en");
 
     return json.decode(response.body);
   }
@@ -35,81 +35,118 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(backgroundColor: Colors.black,
-            title: Image.network("https://developers.giphy.com/branch/master/static/header-logo-8974b8ae658f704a5b48a2d039b8ad93.gif"),
-            centerTitle: true),
+      appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Image.network(
+              "https://developers.giphy.com/branch/master/static/header-logo-8974b8ae658f704a5b48a2d039b8ad93.gif"),
+          centerTitle: true),
       body: Padding(
-        child: Column(children: <Widget>[
-            
+        child: Column(
+          children: <Widget>[
             TextField(
               decoration: InputDecoration(
-                labelText: "Pesquise aqui",
-                labelStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder()
-                ),
-              style: TextStyle(color: Colors.white,fontSize: 18.0),
-            ),
-          Expanded(
+                  labelText: "Pesquise aqui",
+                  labelStyle: TextStyle(color: Colors.white),
+                  border: OutlineInputBorder()
+                  ),
+              style: TextStyle(color: Colors.white, fontSize: 18.0),
+           onSubmitted: (text){
+              setState(() {
 
+                this.search = text;
+                this.offset=0;
+              });
+
+
+
+           }, ),
+            Expanded(
               child: FutureBuilder(
-                  future: this._getGifs(),
-                  builder: (context,snapshot){
-                      switch(snapshot.connectionState){
-                            case ConnectionState.waiting:
-                            case ConnectionState.none:
-                              return Container(
-                                alignment: Alignment.center,
-                                  width: 200,
-                                  height: 200,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                    strokeWidth: 5.0,
-                                  ),
-                              );
-                      default:
-                        if(snapshot.hasError)
-                          return Container();
-                        else
-                        return createGifTable(context,snapshot);
-                      }
-                  },
-
-
+                future: this._getGifs(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return Container(
+                        alignment: Alignment.center,
+                        width: 200,
+                        height: 200,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 5.0,
+                        ),
+                      );
+                    default:
+                      if (snapshot.hasError)
+                        return Container();
+                      else
+                        return createGifTable(context, snapshot);
+                  }
+                },
               ),
-
-
-
-          )
-      
-      
-      ],
-      ),
-
-      padding: EdgeInsets.all(10.0),
-
+            )
+          ],
+        ),
+        padding: EdgeInsets.all(10.0),
       ),
     );
   }
 
 
-  Widget createGifTable(BuildContext buildcontext,AsyncSnapshot snapshot){
+  int getCount(List data){
+    if(this.search==null)
+      return (data.length);
+    else return  data.length+1;
+  }
 
+  Widget createGifTable(BuildContext buildcontext, AsyncSnapshot snapshot) {
     return GridView.builder(
       padding: EdgeInsets.all(10.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10.0
-        ),
-      itemCount: 2,
-      itemBuilder: (context,builder){
-          return GestureDetector();
+          crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10.0),
+      itemCount: getCount(snapshot.data["data"]),
+      itemBuilder: (context, index) {
+        
+        if(search==null || index<(snapshot.data['data'].length) )
+        return GestureDetector(
+          child: Image.network(
+            snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+            height: 300.0,
+            fit: BoxFit.cover,
+          ),
+        );
+
+        else
+          return Container(
+              child: GestureDetector(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                    Icon(Icons.add,color:Colors.white,size:70),
+                    Text("Carregar Mais",
+                    style: TextStyle(color:Colors.white,fontSize: 22.0)
+                    )
 
 
+                  ],),
+                
+                  onTap: (){
+                      setState(() {
+                        this.offset+=19;
+
+                      });
+
+
+                  }
+                
+                ,),
+
+
+          );
       },
-
     );
-
-
   }
 }
+
+
