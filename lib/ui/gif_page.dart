@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 
 
 class GifPage extends StatelessWidget {
@@ -15,6 +16,15 @@ class GifPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
       title: Text(gifdata["title"]),backgroundColor: Colors.black,
+      actions: <Widget>[
+        IconButton(icon:Icon(Icons.share),onPressed: (){
+          Share.share(gifdata["images"]["fixed_height"]["url"]);
+
+
+        },)
+
+
+      ],
       ),
       backgroundColor: Colors.black,
       body: Center(
