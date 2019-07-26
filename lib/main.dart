@@ -4,5 +4,6 @@ import 'package:buscador_de_gifs/ui/home_page.dart';
 
 
 void main() {
-  runApp(MaterialApp(home: Home()));
+  runApp(MaterialApp(home: Home(),  theme:ThemeData(hintColor: Colors.white)
+));
 }

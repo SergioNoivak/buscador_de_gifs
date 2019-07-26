@@ -34,9 +34,82 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(backgroundColor: Colors.black,
             title: Image.network("https://developers.giphy.com/branch/master/static/header-logo-8974b8ae658f704a5b48a2d039b8ad93.gif"),
             centerTitle: true),
+      body: Padding(
+        child: Column(children: <Widget>[
+            
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Pesquise aqui",
+                labelStyle: TextStyle(color: Colors.white),
+                border: OutlineInputBorder()
+                ),
+              style: TextStyle(color: Colors.white,fontSize: 18.0),
+            ),
+          Expanded(
+
+              child: FutureBuilder(
+                  future: this._getGifs(),
+                  builder: (context,snapshot){
+                      switch(snapshot.connectionState){
+                            case ConnectionState.waiting:
+                            case ConnectionState.none:
+                              return Container(
+                                alignment: Alignment.center,
+                                  width: 200,
+                                  height: 200,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    strokeWidth: 5.0,
+                                  ),
+                              );
+                      default:
+                        if(snapshot.hasError)
+                          return Container();
+                        else
+                        return createGifTable(context,snapshot);
+                      }
+                  },
+
+
+              ),
+
+
+
+          )
+      
+      
+      ],
+      ),
+
+      padding: EdgeInsets.all(10.0),
+
+      ),
     );
+  }
+
+
+  Widget createGifTable(BuildContext buildcontext,AsyncSnapshot snapshot){
+
+    return GridView.builder(
+      padding: EdgeInsets.all(10.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10.0
+        ),
+      itemCount: 2,
+      itemBuilder: (context,builder){
+          return GestureDetector();
+
+
+      },
+
+    );
+
+
   }
 }
