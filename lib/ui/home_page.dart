@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:buscador_de_gifs/ui/gif_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -115,6 +116,13 @@ class _HomeState extends State<Home> {
             height: 300.0,
             fit: BoxFit.cover,
           ),
+          onTap: (){
+
+                Navigator.push(context, MaterialPageRoute(builder: (context)  => GifPage(snapshot.data["data"][index]) ));
+
+
+
+          },
         );
 
         else
